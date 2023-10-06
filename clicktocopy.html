@@ -4,21 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Click to Copy</title>
+    <style>
+        #notification {
+            display: none;
+            color: green;
+        }
+    </style>
 </head>
 <body>
 
-<p id="textToCopy">これはコピーしたいテキストです。</p>
-<button onclick="copyText()">コピーする</button>
+<input type="text" id="newItem" placeholder="新しい項目を入力...">
+<button onclick="addItem()">項目を追加</button>
+
+<div id="items"></div>
+
+<p id="notification">テキストをコピーしました！</p>
 
 <script>
-    function copyText() {
-        let textArea = document.createElement("textarea");
-        textArea.value = document.getElementById('textToCopy').textContent;
+    function addItem() {
+        const itemValue = document.getElementById('newItem').value;
+        const itemDiv = document.createElement('div');
+
+        const pItem = document.createElement('p');
+        pItem.textContent = itemValue;
+
+        const copyButton = document.createElement('button');
+        copyButton.textContent = 'コピー';
+        copyButton.onclick = function() {
+            copyText(pItem);
+        };
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '削除';
+        deleteButton.onclick = function() {
+            deleteItem(itemDiv);
+        };
+
+        itemDiv.appendChild(pItem);
+        itemDiv.appendChild(copyButton);
+        itemDiv.appendChild(deleteButton);
+
+        document.getElementById('items').appendChild(itemDiv);
+    }
+
+    function copyText(pItem) {
+        const textArea = document.createElement("textarea");
+        textArea.value = pItem.textContent;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
         document.body.removeChild(textArea);
-        alert('テキストをコピーしました！');
+        showNotification();
+    }
+
+    function showNotification() {
+        const notification = document.getElementById('notification');
+        notification.style.display = 'inline';
+        setTimeout(() => notification.style.display = 'none', 2000);
+    }
+
+    function deleteItem(itemDiv) {
+        document.getElementById('items').removeChild(itemDiv);
     }
 </script>
 
